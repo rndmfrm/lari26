@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Larissa & Ricardo</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Montserrat',sans-serif;background:#e8e6df;color:#1a3a27;font-weight:300;-webkit-font-smoothing:antialiased}
+input,select,textarea,button{font-family:'Montserrat',sans-serif;-webkit-appearance:none}
+input:focus,select:focus,textarea:focus{outline:none}
+
+#nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:center;gap:.25rem;padding:.9rem 2rem;background:rgba(232,230,223,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(181,191,168,0.25)}
+.nav-btn{background:transparent;border:none;cursor:pointer;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#4a7c5e;font-weight:300;padding:.3rem .8rem;transition:color .2s}
+.nav-btn:hover{color:#1a3a27}
+.nav-btn.active{color:#1a3a27;font-weight:500}
+
+.page{display:none;width:100%;min-height:100vh;flex-direction:column}
+.page.active{display:flex}
+
+.glass{background:rgba(255,255,255,0.55);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.75);border-radius:24px;box-shadow:0 4px 24px rgba(45,90,61,0.07)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:.85rem 1.6rem;border-radius:999px;border:none;cursor:pointer;font-size:13px;letter-spacing:2px;text-transform:uppercase;font-weight:400;transition:opacity .2s;font-family:'Montserrat',sans-serif}
+.btn:hover{opacity:.82}
+.btn-primary{background:#1a3a27;color:#e8e6df;box-shadow:0 4px 16px rgba(26,58,39,0.2)}
+.btn-ghost{background:rgba(255,255,255,0.5);color:#2d5a3d;border:1.5px solid rgba(181,191,168,0.6)}
+.btn-danger{background:transparent;color:#a33;border:1.5px solid rgba(163,51,51,0.35)}
+.btn-icon{background:#1a3a27;color:#e8e6df;width:44px;height:44px;padding:0;font-size:18px;border-radius:50%}
+
+.inp{width:100%;padding:.85rem 1.1rem;border:1.5px solid rgba(181,191,168,0.5);background:rgba(255,255,255,0.6);color:#1a3a27;font-size:15px;font-weight:300;border-radius:18px;transition:border-color .2s;font-family:'Montserrat',sans-serif}
+.inp:focus{border-color:#2d5a3d}
+.lbl{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#4a7c5e;margin-bottom:.5rem;display:block;font-weight:400}
+
+.ev-btn{background:rgba(255,255,255,0.55);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.75);border-radius:24px;box-shadow:0 4px 24px rgba(45,90,61,0.07);padding:1.5rem 1rem;text-align:center;cursor:pointer;width:100%;transition:transform .18s,box-shadow .18s}
+.ev-btn:hover{transform:translateY(-3px);box-shadow:0 10px 36px rgba(45,90,61,0.14)}
+.ev-btn:active{transform:translateY(0)}
+
+footer{background:#1a3a27;text-align:center;padding:2.5rem 2rem 2rem;border-radius:32px 32px 0 0;margin-top:auto}
+.ft-names{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-style:italic;font-weight:300;color:#e8e6df;margin-bottom:.5rem}
+.ft-date{font-size:13px;letter-spacing:2px;color:#b5bfa8}
+.ft-admin{margin:1.25rem auto 0;background:transparent;border:none;cursor:pointer;color:rgba(181,191,168,0.2);font-size:11px;font-family:'Montserrat',sans-serif;display:block;transition:color .2s}
+.ft-admin:hover{color:rgba(181,191,168,0.6)}
+
+.guest-option{display:flex;align-items:center;justify-content:space-between;width:100%;text-align:left;padding:.9rem 1.1rem;background:transparent;border:none;border-bottom:1px solid rgba(181,191,168,0.25);cursor:pointer;font-size:15px;color:#1a3a27;font-family:'Montserrat',sans-serif;font-weight:300;transition:background .15s}
+.guest-option:last-child{border-bottom:none}
+.guest-option:hover:not(:disabled){background:rgba(26,58,39,0.06)}
+.guest-option.sel{background:rgba(26,58,39,0.09);font-weight:500}
+.guest-option.done-yes{color:#2d6a4f}
+.guest-option.done-no{color:#a33}
+.guest-option:disabled{opacity:.5;cursor:default}
+.sel-tag{display:inline-flex;align-items:center;gap:.4rem;background:rgba(26,58,39,0.1);color:#1a3a27;border-radius:999px;padding:.4rem 1rem;font-size:13px}
+.person-card{margin-bottom:1.25rem;border:1px solid rgba(181,191,168,0.4);border-radius:18px;padding:1.25rem;background:rgba(255,255,255,0.35)}
+.person-name{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:#1a3a27;margin-bottom:1rem;padding-bottom:.6rem;border-bottom:1px solid rgba(181,191,168,0.3)}
+.fg{margin-bottom:1.1rem}
+.radio-row{display:flex;gap:.75rem;flex-wrap:wrap}
+.rc{display:flex;align-items:center;gap:.65rem;cursor:pointer;flex:1;padding:.85rem 1rem;border-radius:14px;border:1px solid rgba(181,191,168,0.4);background:rgba(255,255,255,0.55);font-size:14px;color:#1a3a27;transition:border-color .2s}
+.rc.sel{border:1.5px solid #2d5a3d;font-weight:500}
+.rc input{width:17px;height:17px;accent-color:#1a3a27;flex-shrink:0}
+.rc-col{display:flex;flex-direction:column;gap:.5rem}
+
+.tab-btn{padding:.5rem 1rem;border-radius:999px;border:none;cursor:pointer;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;background:transparent;color:#4a7c5e;font-weight:300;font-family:'Montserrat',sans-serif;transition:all .2s}
+.tab-btn.active{background:#1a3a27;color:#e8e6df;font-weight:500}
+.tab{display:none}
+.tab.active{display:block}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem}
+</style>
+</head>
+<body>
+
+<div id="nav">
+  <button class="nav-btn active" onclick="goTo('p-inicio')">Início</button>
+  <button class="nav-btn" onclick="goTo('p-evento')">Evento</button>
+  <button class="nav-btn" onclick="goTo('p-convidados')">Convidados</button>
+  <button class="nav-btn" onclick="goTo('p-detalhes')">Detalhes</button>
+</div>
+
+<!-- ══ INÍCIO ══ -->
+<div id="p-inicio" class="page active">
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:7rem 1.5rem 3rem;background:linear-gradient(160deg,#e8e6df 60%,#d4dfc8 100%)">
+    <p style="font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#4a7c5e;margin-bottom:1.25rem">17 de Outubro de 2026</p>
+    <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(3.5rem,10vw,7rem);font-weight:300;line-height:1.05;color:#1a3a27"><em>Larissa</em><br>&amp;<br><em>Ricardo</em></h1>
+    <div style="width:40px;height:1.5px;background:#b5bfa8;border-radius:999px;margin:1.5rem auto"></div>
+    <p style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#4a7c5e;margin-bottom:2.5rem">Padaria Farmhouse</p>
+    <div class="glass" style="display:flex;gap:2rem;flex-wrap:wrap;justify-content:center;padding:1.25rem 2rem;margin-bottom:2.5rem">
+      <div style="text-align:center"><span id="cd-d" style="font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:300;color:#1a3a27;display:block;line-height:1">--</span><span style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#4a7c5e;margin-top:4px;display:block">Dias</span></div>
+      <div style="text-align:center"><span id="cd-h" style="font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:300;color:#1a3a27;display:block;line-height:1">--</span><span style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#4a7c5e;margin-top:4px;display:block">Horas</span></div>
+      <div style="text-align:center"><span id="cd-m" style="font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:300;color:#1a3a27;display:block;line-height:1">--</span><span style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#4a7c5e;margin-top:4px;display:block">Min</span></div>
+      <div style="text-align:center"><span id="cd-s" style="font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:300;color:#1a3a27;display:block;line-height:1">--</span><span style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#4a7c5e;margin-top:4px;display:block">Seg</span></div>
+    </div>
+    <button class="btn btn-primary" style="font-size:14px;padding:1rem 2.5rem" onclick="goTo('p-convidados')">Confirme a sua Presença</button>
+  </div>
+  <footer>
+    <p class="ft-names">Larissa &amp; Ricardo</p>
+    <p class="ft-date">17 · 10 · 2026 &nbsp;·&nbsp; Padaria Farmhouse</p>
+    <button class="ft-admin" onclick="goTo('p-admin')">⚙</button>
+  </footer>
+</div>
+
+<!-- ══ EVENTO ══ -->
+<div id="p-evento" class="page">
+  <div style="flex:1;padding:6rem 1.5rem 3rem;background:linear-gradient(160deg,#dddbd3 0%,#e8e6df 100%)">
+    <div style="max-width:600px;margin:0 auto;text-align:center">
+      <p style="font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#4a7c5e;margin-bottom:.75rem">O Grande Dia</p>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,3rem);font-weight:300;color:#1a3a27;margin-bottom:1rem">O Evento</h2>
+      <p style="font-size:15px;line-height:1.9;color:#4a7c5e;margin-bottom:2.5rem">Será um prazer poder celebrar convosco este dia tão especial.</p>
+
+      <!-- 3 BOTÕES INTERATIVOS -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem">
+
+        <button class="ev-btn" onclick="addToCalendar()">
+          <span style="font-size:26px;display:block;margin-bottom:.6rem">📅</span>
+          <p style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#4a7c5e;margin-bottom:.4rem">Data</p>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:1.15rem;color:#1a3a27;line-height:1.4">Sábado,<br>17 de Outubro 2026</p>
+          <p style="font-size:9px;color:#b5bfa8;margin-top:.5rem;letter-spacing:.5px">+ calendário</p>
+        </button>
+
+        <button class="ev-btn" onclick="toggleCronograma()">
+          <span style="font-size:26px;display:block;margin-bottom:.6rem">🗓</span>
+          <p style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#4a7c5e;margin-bottom:.4rem">Cronograma</p>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:1.15rem;color:#1a3a27;line-height:1.3">Ver<br>Aqui</p>
+          <p id="crono-hint" style="font-size:9px;color:#b5bfa8;margin-top:.5rem;letter-spacing:.5px">▼ expandir</p>
+        </button>
+
+        <button class="ev-btn" onclick="openMaps()">
+          <span style="font-size:26px;display:block;margin-bottom:.6rem">📍</span>
+          <p style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#4a7c5e;margin-bottom:.4rem">Local</p>
+          <p style="font-family:'Cormorant Garamond',serif;font-size:1.15rem;color:#1a3a27;line-height:1.3">Padaria<br>Farmhouse</p>
+          <p style="font-size:9px;color:#b5bfa8;margin-top:.5rem;letter-spacing:.5px">↗ ver mapa</p>
+        </button>
+
+      </div>
+
+      <!-- CRONOGRAMA -->
+      <div id="cronograma-box" style="display:none;margin-bottom:1rem;text-align:left">
+        <div class="glass" style="padding:1.75rem">
+          <p style="font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#4a7c5e;margin-bottom:1.25rem;text-align:center;font-weight:500">Programa do Dia</p>
+          <div>
+            <div style="display:flex;align-items:center;gap:1rem;padding:.75rem 0;border-bottom:1px solid rgba(181,191,168,0.2)"><span style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:#2d5a3d;min-width:62px">12h00</span><span style="font-size:14px;color:#1a3a27">Receção dos Convidados</span></div>
+            <div style="display:flex;align-items:center;gap:1rem;padding:.75rem 0;border-bottom:1px solid rgba(181,191,168,0.2)"><span style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:#2d5a3d;min-width:62px">12h30</span><span style="font-size:14px;color:#1a3a27">Início da Cerimónia</span></div>
+            <div style="display:flex;align-items:center;gap:1rem;padding:.75rem 0;border-bottom:1px solid rgba(181,191,168,0.2)"><span style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:#2d5a3d;min-width:62px">13h30</span><span style="font-size:14px;color:#1a3a27">Cocktail</span></div>
+            <div style="display:flex;align-items:center;gap:1rem;padding:.75rem 0;border-bottom:1px solid rgba(181,191,168,0.2)"><span style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:#2d5a3d;min-width:62px">14h30</span><span style="font-size:14px;color:#1a3a27">Almoço</span></div>
+            <div style="display:flex;align-items:center;gap:1rem;padding:.75rem 0;border-bottom:1px solid rgba(181,191,168,0.2)"><span style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:#2d5a3d;min-width:62px">16h00</span><span style="font-size:14px;color:#1a3a27">Festa</span></div>
+            <div style="display:flex;align-items:center;gap:1rem;padding:.75rem 0"><span style="font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:#2d5a3d;min-width:62px">19h00</span><span style="font-size:14px;color:#1a3a27">Corte do Bolo</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <p class="ft-names">Larissa &amp; Ricardo</p>
+    <p class="ft-date">17 · 10 · 2026 &nbsp;·&nbsp; Padaria Farmhouse</p>
+    <button class="ft-admin" onclick="goTo('p-admin')">⚙</button>
+  </footer>
+</div>
+
+<!-- ══ CONVIDADOS ══ -->
+<div id="p-convidados" class="page">
+  <div style="flex:1;padding:6rem 1.5rem 3rem;background:linear-gradient(160deg,#e8e6df 60%,#d4dfc8 100%)">
+    <div style="max-width:520px;margin:0 auto;text-align:center">
+      <p style="font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#4a7c5e;margin-bottom:.75rem">Confirmação de Presença</p>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,3rem);font-weight:300;color:#1a3a27;margin-bottom:1rem">Vais estar lá?</h2>
+      <p style="font-size:15px;line-height:1.9;color:#4a7c5e;margin-bottom:2rem">Seleciona o(s) teu(s) nome(s) e confirma a presença.</p>
+
+      <div id="s1">
+        <button class="btn btn-primary" style="font-size:14px;padding:1rem 2.5rem" onclick="openDrop()">Confirme a sua Presença</button>
+
+        <!-- Lista confirmados pública -->
+        <div style="margin-top:2rem;text-align:left">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
+            <p id="confirmed-pub-title" style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#4a7c5e;font-weight:500"></p>
+            <button id="confirmed-pub-toggle" onclick="toggleConfirmedList()" style="display:none;background:transparent;border:none;cursor:pointer;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#4a7c5e;font-family:'Montserrat',sans-serif">▲ Fechar</button>
+          </div>
+          <div id="confirmed-pub-list"></div>
+        </div>
+
+        <div id="drop" style="display:none;margin-top:1.5rem;text-align:left">
+          <p class="lbl" style="text-align:center;margin-bottom:.75rem">Seleciona o(s) teu(s) nome(s)</p>
+          <div class="glass" style="padding:.5rem;max-height:280px;overflow-y:auto;margin-bottom:1rem">
+            <div id="name-list"></div>
+          </div>
+          <div id="sel-preview" style="display:none;margin-bottom:1rem">
+            <p class="lbl" style="margin-bottom:.6rem">Selecionados</p>
+            <div id="sel-tags" style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem"></div>
+          </div>
+          <button id="btn-continue" class="btn btn-primary" style="display:none;width:100%" onclick="showForm()">Continuar →</button>
+        </div>
+      </div>
+
+      <div id="s2" style="display:none;text-align:left">
+        <div class="glass" style="padding:2rem">
+          <p style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:#1a3a27;text-align:center;margin-bottom:.5rem">A confirmar para:</p>
+          <div id="form-names" style="display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:1.5rem"></div>
+          <div id="person-fields"></div>
+          <div class="fg">
+            <label class="lbl">Mensagem para os noivos (opcional)</label>
+            <textarea class="inp" id="group-msg" rows="2" placeholder="Uma palavra especial..." style="resize:vertical"></textarea>
+          </div>
+          <div style="display:flex;gap:.75rem;margin-top:.5rem">
+            <button class="btn btn-ghost" style="flex:1" onclick="resetRsvp()">Voltar</button>
+            <button class="btn btn-primary" style="flex:2" onclick="submitRsvp()">Confirmar</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="s3" style="display:none">
+        <div class="glass" style="padding:2.5rem;text-align:center">
+          <p id="done-title" style="font-family:'Cormorant Garamond',serif;font-size:2rem;color:#1a3a27"></p>
+          <span id="done-sub" style="font-size:15px;color:#4a7c5e;margin-top:.75rem;display:block;line-height:1.7"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <p class="ft-names">Larissa &amp; Ricardo</p>
+    <p class="ft-date">17 · 10 · 2026 &nbsp;·&nbsp; Padaria Farmhouse</p>
+    <button class="ft-admin" onclick="goTo('p-admin')">⚙</button>
+  </footer>
+</div>
+
+<!-- ══ DETALHES ══ -->
+<div id="p-detalhes" class="page">
+  <div style="flex:1;padding:6rem 1.5rem 3rem;background:linear-gradient(160deg,#dddbd3 0%,#e8e6df 100%)">
+    <div style="max-width:640px;margin:0 auto;text-align:center">
+      <p style="font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#4a7c5e;margin-bottom:.75rem">Informações Úteis</p>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,3rem);font-weight:300;color:#1a3a27;margin-bottom:2.5rem">Detalhes</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;text-align:left">
+        <div class="glass" style="padding:1.5rem"><span style="font-size:22px;display:block;margin-bottom:.75rem">👗</span><p style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#4a7c5e;margin-bottom:.5rem">Dress Code</p><p style="font-size:15px;color:#1a3a27;font-weight:400;margin-bottom:.4rem">Semi-Formal/<br>Cocktail</p><span style="font-size:13px;color:#4a7c5e">Evitar tons escuros</span></div>
+        <div class="glass" style="padding:1.5rem"><span style="font-size:22px;display:block;margin-bottom:.75rem">🏨</span><p style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#4a7c5e;margin-bottom:.5rem">Alojamentos</p><span style="font-size:13px;color:#b5bfa8;font-style:italic">a definir</span></div>
+        <div class="glass" style="padding:1.5rem"><span style="font-size:22px;display:block;margin-bottom:.75rem">🌍</span><p style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#4a7c5e;margin-bottom:.5rem">Lua-de-Mel</p><p style="font-size:14px;color:#1a3a27;line-height:1.7">A vossa presença já é o maior presente que poderíamos receber, mas se nos quiserem ajudar a ir a um sítio mais giro que Badajoz, também não nos queixamos ;)</p><p style="font-size:12px;color:#4a7c5e;margin-top:.85rem;line-height:1.6">*Para quem preferir, a contribuição poderá ser feita por MBWay para um dos noivos.</p></div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <p class="ft-names">Larissa &amp; Ricardo</p>
+    <p class="ft-date">17 · 10 · 2026 &nbsp;·&nbsp; Padaria Farmhouse</p>
+    <button class="ft-admin" onclick="goTo('p-admin')">⚙</button>
+  </footer>
+</div>
+
+<!-- ══ ADMIN ══ -->
+<div id="p-admin" class="page">
+  <div id="admin-login" style="flex:1;display:flex;align-items:center;justify-content:center;padding:2rem;background:linear-gradient(160deg,#e8e6df 60%,#d4dfc8 100%)">
+    <div class="glass" style="padding:2.5rem;max-width:360px;width:100%;text-align:center">
+      <p style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:#1a3a27;margin-bottom:2rem">Administração</p>
+      <div style="text-align:left;margin-bottom:1rem">
+        <label class="lbl">Password</label>
+        <input class="inp" type="password" id="pw-inp" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+        <p id="pw-err" style="display:none;color:#a33;font-size:13px;margin-top:.5rem">Password incorreta.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.75rem">
+        <button class="btn btn-primary" style="width:100%" onclick="doLogin()">Entrar</button>
+        <button class="btn btn-ghost" style="width:100%" onclick="goTo('p-inicio')">⌂ Voltar ao Início</button>
+      </div>
+    </div>
+  </div>
+  <div id="admin-panel" style="display:none;flex:1;padding:5rem 1.25rem 4rem;background:linear-gradient(160deg,#e8e6df 60%,#d4dfc8 100%)">
+    <div style="max-width:800px;margin:0 auto">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:2rem">
+        <div style="display:flex;align-items:center;gap:.75rem">
+          <button class="btn btn-icon" onclick="goTo('p-inicio')">⌂</button>
+          <h2 style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:#1a3a27">Administração</h2>
+        </div>
+        <div style="background:rgba(255,255,255,0.6);border:1px solid rgba(181,191,168,0.4);border-radius:16px;padding:.5rem;display:flex;gap:.35rem;flex-wrap:wrap">
+          <button class="tab-btn active" onclick="switchTab('t-guests',this)">Convidados</button>
+          <button class="tab-btn" onclick="switchTab('t-rsvps',this)">Confirmações</button>
+          <button class="tab-btn" onclick="switchTab('t-stats',this)">Estatísticas</button>
+        </div>
+      </div>
+      <div id="t-guests" class="tab active">
+        <div class="glass" style="padding:1.75rem;margin-bottom:1.5rem">
+          <p class="lbl" style="margin-bottom:1rem">Adicionar Convidado</p>
+          <div style="display:flex;gap:.75rem;align-items:flex-end;flex-wrap:wrap">
+            <div style="flex:1;min-width:180px">
+              <label class="lbl">Nome</label>
+              <input class="inp" id="new-name" placeholder="Nome completo" onkeydown="if(event.key==='Enter')addGuest()">
+            </div>
+            <button class="btn btn-primary" onclick="addGuest()">+ Adicionar</button>
+          </div>
+        </div>
+        <input class="inp" id="admin-search" placeholder="🔍  Pesquisar..." style="margin-bottom:1rem;border-radius:999px;padding-left:1.4rem" oninput="renderGuests()">
+        <div id="guest-list"></div>
+      </div>
+      <div id="t-rsvps" class="tab"><div id="rsvp-list"></div></div>
+      <div id="t-stats" class="tab">
+        <div class="stat-grid" id="stats-grid" style="margin-bottom:2rem"></div>
+        <div id="stats-pratos" style="margin-bottom:2rem"></div>
+        <div id="stats-msgs"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var guests = JSON.parse(localStorage.getItem('w_guests') || '[]');
+var rsvps  = JSON.parse(localStorage.getItem('w_rsvps')  || '[]');
+var selGuests = [];
+var confirmedListOpen = true;
+var PASS = 'lr25';
+var DEMO = [{id:'d1',name:'Nome 1'},{id:'d2',name:'Nome 2'},{id:'d3',name:'Nome 3'},{id:'d4',name:'Nome 4'}];
+var NOIVOS = ['Ricardo Dias','Larissa Marinho'];
+var PRATOS = ['Bacalhau com Broa e Legumes','Lombo de Porco com Batata Doce, Castanhas, Ameixas e Legumes','Vegetariano'];
+
+function saveG(){ localStorage.setItem('w_guests', JSON.stringify(guests)); }
+function saveR(){ localStorage.setItem('w_rsvps',  JSON.stringify(rsvps)); }
+function getG(){ return guests.length ? guests : DEMO; }
+
+// NAV
+var pageMap = {'p-inicio':0,'p-evento':1,'p-convidados':2,'p-detalhes':3};
+function goTo(id){
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); p.style.display='none'; });
+  var el = document.getElementById(id);
+  el.style.display = 'flex';
+  el.classList.add('active');
+  window.scrollTo(0,0);
+  document.querySelectorAll('.nav-btn').forEach(function(b,i){ b.classList.toggle('active', i===pageMap[id]); });
+  if(id==='p-admin') initAdmin();
+  if(id==='p-convidados') renderConfirmedPublic();
+}
+
+// COUNTDOWN
+function tick(){
+  var diff = new Date('2026-10-17T12:00:00') - new Date();
+  if(diff<=0) return;
+  function p(n){ return String(Math.floor(n)).padStart(2,'0'); }
+  document.getElementById('cd-d').textContent = p(diff/86400000);
+  document.getElementById('cd-h').textContent = p((diff%86400000)/3600000);
+  document.getElementById('cd-m').textContent = p((diff%3600000)/60000);
+  document.getElementById('cd-s').textContent = p((diff%60000)/1000);
+}
+tick(); setInterval(tick,1000);
+
+// EVENTO BUTTONS
+function toggleDet(id){
+  var box = document.getElementById(id);
+  var arrow = document.getElementById(id+'-arrow');
+  var open = box.style.display==='none';
+  box.style.display = open?'block':'none';
+  arrow.textContent = open?'▲':'▼';
+}
+
+function addToCalendar(){
+  window.open('https://calendar.google.com/calendar/render?action=TEMPLATE&text=Casamento+Larissa+%26+Ricardo&dates=20251017T110000Z/20251017T200000Z&details=Cerim%C3%B3nia+%C3%A0s+12h00+na+Padaria+Farmhouse&location=Padaria+Farmhouse','_blank');
+}
+function toggleCronograma(){
+  var box = document.getElementById('cronograma-box');
+  var hint = document.getElementById('crono-hint');
+  var open = box.style.display==='none';
+  box.style.display = open ? 'block' : 'none';
+  hint.textContent = open ? '▲ fechar' : '▼ expandir';
+}
+function openMaps(){
+  window.open('https://www.google.com/maps/search/Padaria+Farmhouse','_blank');
+}
+
+// RSVP
+function openDrop(){
+  var d = document.getElementById('drop');
+  var open = d.style.display==='none';
+  d.style.display = open ? 'block' : 'none';
+  if(open){ selGuests=[]; renderList(); updateSel(); }
+}
+
+function renderList(){
+  document.getElementById('name-list').innerHTML = getG().map(function(g){
+    var r = rsvps.find(function(r){ return r.guestId===g.id; });
+    var done = !!r;
+    var isSel = selGuests.some(function(s){ return s.id===g.id; });
+    var badge = done?(r.attending?' ✓':' ✗'):'';
+    var cls = done?(r.attending?'done-yes':'done-no'):(isSel?'sel':'');
+    var isNoivo = NOIVOS.indexOf(g.name)>=0;
+    var tag = isNoivo ? '<span style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;background:#2d5a3d;color:#e8e6df;border-radius:999px;padding:2px 7px;margin-left:7px">noivos</span>' : '';
+    return '<button class="guest-option '+cls+'" onclick="toggleSel(\''+g.id+'\')" '+(done?'disabled':'')+'>'+
+      '<span>'+g.name+tag+badge+'</span>'+(isSel?'<span style="color:#2d5a3d;font-size:16px">✓</span>':'')+
+    '</button>';
+  }).join('');
+}
+
+function toggleSel(id){
+  var g = getG().find(function(g){ return g.id===id; });
+  if(!g) return;
+  var idx = selGuests.findIndex(function(s){ return s.id===id; });
+  if(idx>=0) selGuests.splice(idx,1); else selGuests.push(g);
+  renderList(); updateSel();
+}
+
+function updateSel(){
+  var has = selGuests.length>0;
+  document.getElementById('sel-preview').style.display = has?'block':'none';
+  document.getElementById('btn-continue').style.display = has?'block':'none';
+  document.getElementById('sel-tags').innerHTML = selGuests.map(function(g){
+    return '<span class="sel-tag">👤 '+g.name+'</span>';
+  }).join('');
+}
+
+function showForm(){
+  document.getElementById('s1').style.display='none';
+  document.getElementById('s2').style.display='block';
+  document.getElementById('form-names').innerHTML = selGuests.map(function(g){
+    return '<span class="sel-tag">👤 '+g.name+'</span>';
+  }).join('');
+  document.getElementById('person-fields').innerHTML = selGuests.map(function(g,i){
+    return '<div class="person-card">'+
+      '<p class="person-name">'+g.name+'</p>'+
+      '<div class="fg"><span class="lbl">Presença</span>'+
+        '<div class="radio-row">'+
+          '<label class="rc sel" id="ry'+i+'"><input type="radio" name="att'+i+'" value="yes" checked onchange="onAtt('+i+')"> ✓ Estarei presente</label>'+
+          '<label class="rc" id="rn'+i+'"><input type="radio" name="att'+i+'" value="no" onchange="onAtt('+i+')"> ✗ Não poderei</label>'+
+        '</div></div>'+
+      '<div id="extras'+i+'">'+
+        '<div class="fg"><span class="lbl">Prato de Comida</span>'+
+          '<div class="rc-col">'+
+            '<label class="rc" id="p'+i+'_0"><input type="radio" name="prato'+i+'" value="0" onchange="onPrato('+i+')"> 🐟 Bacalhau com Broa e Legumes</label>'+
+            '<label class="rc" id="p'+i+'_1"><input type="radio" name="prato'+i+'" value="1" onchange="onPrato('+i+')"> 🥩 Lombo de Porco com Batata Doce, Castanhas, Ameixas e Legumes</label>'+
+            '<label class="rc" id="p'+i+'_2"><input type="radio" name="prato'+i+'" value="2" onchange="onPrato('+i+')"> 🥦 Vegetariano</label>'+
+          '</div></div>'+
+        '<div class="fg"><span class="lbl">Vem com Bebé?</span>'+
+          '<div class="radio-row">'+
+            '<label class="rc" id="by'+i+'"><input type="radio" name="baby'+i+'" value="yes" onchange="onBaby('+i+')"> 👶 Sim</label>'+
+            '<label class="rc sel" id="bn'+i+'"><input type="radio" name="baby'+i+'" value="no" checked onchange="onBaby('+i+')"> Não</label>'+
+          '</div></div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+function onAtt(i){
+  var yes = document.querySelector('input[name="att'+i+'"]:checked').value==='yes';
+  document.getElementById('ry'+i).classList.toggle('sel',yes);
+  document.getElementById('rn'+i).classList.toggle('sel',!yes);
+  document.getElementById('extras'+i).style.display=yes?'block':'none';
+}
+function onPrato(i){
+  var val = document.querySelector('input[name="prato'+i+'"]:checked').value;
+  [0,1,2].forEach(function(j){ var el=document.getElementById('p'+i+'_'+j); if(el) el.classList.toggle('sel',val===String(j)); });
+}
+function onBaby(i){
+  var yes = document.querySelector('input[name="baby'+i+'"]:checked').value==='yes';
+  document.getElementById('by'+i).classList.toggle('sel',yes);
+  document.getElementById('bn'+i).classList.toggle('sel',!yes);
+}
+
+function submitRsvp(){
+  var msg = document.getElementById('group-msg').value||'';
+  selGuests.forEach(function(g,i){
+    var att = document.querySelector('input[name="att'+i+'"]:checked').value==='yes';
+    var pratoEl = document.querySelector('input[name="prato'+i+'"]:checked');
+    var prato = (att&&pratoEl) ? PRATOS[pratoEl.value] : '';
+    var babyEl = document.querySelector('input[name="baby'+i+'"]:checked');
+    var baby = att && babyEl && babyEl.value==='yes';
+    rsvps = rsvps.filter(function(r){ return r.guestId!==g.id; });
+    rsvps.push({guestId:g.id,guestName:g.name,attending:att,prato:prato,baby:baby,message:msg,confirmedAt:new Date().toISOString()});
+  });
+  saveR();
+  renderConfirmedPublic();
+  document.getElementById('s2').style.display='none';
+  document.getElementById('s3').style.display='block';
+  var allYes = selGuests.every(function(_,i){ return document.querySelector('input[name="att'+i+'"]:checked').value==='yes'; });
+  document.getElementById('done-title').textContent = allYes?'Até breve! 🤍':'Obrigado pela resposta!';
+  document.getElementById('done-sub').textContent = allYes?'A vossa presença foi confirmada. Estamos ansiosos por celebrar convosco!':'Obrigado por nos informarem. Estarão sempre no nosso coração.';
+}
+
+function resetRsvp(){
+  selGuests=[];
+  document.getElementById('s1').style.display='block';
+  document.getElementById('s2').style.display='none';
+  document.getElementById('s3').style.display='none';
+  document.getElementById('drop').style.display='none';
+}
+
+function toggleConfirmedList(){
+  confirmedListOpen = !confirmedListOpen;
+  document.getElementById('confirmed-pub-list').style.display = confirmedListOpen?'block':'none';
+  document.getElementById('confirmed-pub-toggle').textContent = confirmedListOpen?'▲ Fechar':'▼ Ver lista';
+}
+
+function renderConfirmedPublic(){
+  var confirmed = rsvps.filter(function(r){ return r.attending; });
+  var title = document.getElementById('confirmed-pub-title');
+  var list = document.getElementById('confirmed-pub-list');
+  var toggle = document.getElementById('confirmed-pub-toggle');
+  if(!title||!list||!toggle) return;
+  if(!confirmed.length){ title.textContent=''; list.innerHTML=''; toggle.style.display='none'; return; }
+  title.textContent='✓ Já confirmaram ('+confirmed.length+')';
+  toggle.style.display='inline-block';
+  list.innerHTML='<div style="display:flex;flex-direction:column;gap:.5rem">'+
+    confirmed.map(function(r){
+      return '<div class="glass" style="padding:.7rem 1rem;display:flex;align-items:center;gap:.75rem">'+
+        '<span style="color:#2d6a4f;font-size:16px">✓</span>'+
+        '<span style="font-size:15px;color:#1a3a27">'+r.guestName+'</span>'+
+      '</div>';
+    }).join('')+'</div>';
+  list.style.display = confirmedListOpen?'block':'none';
+}
+
+// ADMIN
+function initAdmin(){
+  var authed = document.getElementById('admin-panel').style.display==='flex';
+  document.getElementById('admin-login').style.display = authed?'none':'flex';
+  document.getElementById('admin-panel').style.display = authed?'flex':'none';
+}
+function doLogin(){
+  if(document.getElementById('pw-inp').value===PASS){
+    document.getElementById('admin-login').style.display='none';
+    document.getElementById('admin-panel').style.display='flex';
+    renderAll();
+  } else { document.getElementById('pw-err').style.display='block'; }
+}
+function switchTab(id,btn){
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  renderAll();
+}
+function addGuest(){
+  var name=document.getElementById('new-name').value.trim();
+  if(!name)return;
+  guests.push({id:Date.now().toString(),name:name});
+  saveG(); document.getElementById('new-name').value=''; renderGuests();
+}
+function removeGuest(id){
+  guests=guests.filter(function(g){ return g.id!==id; });
+  saveG(); renderGuests();
+}
+function renderGuests(){
+  var q=(document.getElementById('admin-search')||{value:''}).value.toLowerCase();
+  var list=guests.filter(function(g){ return g.name.toLowerCase().includes(q); });
+  var el=document.getElementById('guest-list');
+  if(!list.length){ el.innerHTML='<p style="color:#4a7c5e;font-size:14px;text-align:center;padding:2rem">Nenhum convidado ainda.</p>'; return; }
+  el.innerHTML=list.map(function(g){
+    var r=rsvps.find(function(r){ return r.guestId===g.id; });
+    var st=r?(r.attending?'<span style="color:#2d6a4f;font-weight:500">✓ Confirmado</span>':'<span style="color:#a33;font-weight:500">✗ Não vem</span>'):'<span style="color:#aaa">⏳ Pendente</span>';
+    return '<div class="glass" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem;padding:1rem 1.25rem;margin-bottom:.75rem">'+
+      '<div><p style="font-size:15px;color:#1a3a27;font-weight:400">'+g.name+'</p><p style="font-size:12px;color:#4a7c5e;margin-top:3px">'+st+'</p></div>'+
+      '<button class="btn btn-danger" onclick="removeGuest(\''+g.id+'\')">Remover</button></div>';
+  }).join('');
+}
+function renderRsvps(){
+  var confirmed=rsvps.filter(function(r){return r.attending;});
+  var declined=rsvps.filter(function(r){return !r.attending;});
+  var pending=guests.filter(function(g){return !rsvps.find(function(r){return r.guestId===g.id;});});
+  document.getElementById('rsvp-list').innerHTML=[
+    ['✓ Confirmados',confirmed,'#2d6a4f'],
+    ['✗ Não vêm',declined,'#a33'],
+    ['⏳ Pendentes',pending.map(function(g){return {guestName:g.name};}),'#888']
+  ].map(function(gr){
+    return '<div style="margin-bottom:1.75rem"><p style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:'+gr[2]+';margin-bottom:.75rem;font-weight:500">'+gr[0]+' ('+gr[1].length+')</p>'+
+      (gr[1].length?gr[1].map(function(r){
+        return '<div class="glass" style="padding:1.1rem 1.25rem;margin-bottom:.6rem">'+
+          '<p style="font-size:15px;color:#1a3a27;font-weight:400">'+r.guestName+'</p>'+
+          (r.prato?'<p style="font-size:13px;color:#4a7c5e;margin-top:3px">🍽 '+r.prato+'</p>':'')+
+          (r.baby?'<p style="font-size:13px;color:#4a7c5e;margin-top:3px">👶 Vem com bebé</p>':'')+
+          (r.message?'<p style="font-size:13px;color:#4a7c5e;margin-top:4px;font-style:italic">"'+r.message+'"</p>':'')+
+          (r.confirmedAt?'<p style="font-size:11px;color:#aaa;margin-top:4px">'+new Date(r.confirmedAt).toLocaleString('pt-PT')+'</p>':'')+
+        '</div>';
+      }).join(''):'<p style="color:#4a7c5e;font-size:14px">Nenhum.</p>')+
+    '</div>';
+  }).join('');
+}
+function renderStats(){
+  var c=rsvps.filter(function(r){return r.attending;});
+  var d=rsvps.filter(function(r){return !r.attending;});
+  var p=guests.filter(function(g){return !rsvps.find(function(r){return r.guestId===g.id;});});
+  var babies=c.filter(function(r){return r.baby;}).length;
+  document.getElementById('stats-grid').innerHTML=[
+    ['👥','Convidados',guests.length,'#1a3a27'],
+    ['✓','Confirmados',c.length,'#2d6a4f'],
+    ['✗','Não vêm',d.length,'#a33'],
+    ['⏳','Pendentes',p.length,'#888'],
+    ['👶','Com Bebé',babies,'#4a7c5e'],
+  ].map(function(s){
+    return '<div class="glass" style="padding:1.5rem;text-align:center"><span style="font-size:22px;display:block;margin-bottom:.5rem">'+s[0]+'</span><p style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#4a7c5e;margin-bottom:.5rem">'+s[1]+'</p><p style="font-family:\'Cormorant Garamond\',serif;font-size:2.5rem;font-weight:300;color:'+s[3]+'">'+s[2]+'</p></div>';
+  }).join('');
+  var pratoLabels=['🐟 Bacalhau com Broa e Legumes','🥩 Lombo de Porco com Batata Doce, Castanhas, Ameixas e Legumes','🥦 Vegetariano'];
+  var pratoCounts=[0,0,0];
+  c.forEach(function(r){ PRATOS.forEach(function(key,i){ if(r.prato&&r.prato.indexOf(key)>=0) pratoCounts[i]++; }); });
+  document.getElementById('stats-pratos').innerHTML=
+    '<p style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#4a7c5e;margin-bottom:1rem;font-weight:500">🍽 Pratos Escolhidos</p>'+
+    '<div style="display:flex;flex-direction:column;gap:.75rem">'+
+    pratoLabels.map(function(name,i){
+      var pct=c.length?Math.round(pratoCounts[i]/c.length*100):0;
+      return '<div class="glass" style="padding:1rem 1.25rem">'+
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">'+
+          '<span style="font-size:13px;color:#1a3a27">'+name+'</span>'+
+          '<span style="font-family:\'Cormorant Garamond\',serif;font-size:1.5rem;color:#2d5a3d">'+pratoCounts[i]+'</span>'+
+        '</div>'+
+        '<div style="background:rgba(181,191,168,0.3);border-radius:999px;height:6px">'+
+          '<div style="background:#2d5a3d;border-radius:999px;height:6px;width:'+pct+'%"></div>'+
+        '</div></div>';
+    }).join('')+'</div>';
+  var msgs=rsvps.filter(function(r){return r.message&&r.message.trim();});
+  document.getElementById('stats-msgs').innerHTML=
+    '<p style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#4a7c5e;margin-bottom:1rem;font-weight:500;margin-top:2rem">💬 Mensagens</p>'+
+    (msgs.length?msgs.map(function(r){
+      return '<div class="glass" style="padding:1.25rem;margin-bottom:.75rem">'+
+        '<p style="font-size:13px;color:#2d5a3d;font-weight:500;margin-bottom:.4rem">'+r.guestName+'</p>'+
+        '<p style="font-size:15px;color:#1a3a27;font-style:italic;line-height:1.6">"'+r.message+'"</p>'+
+        (r.confirmedAt?'<p style="font-size:11px;color:#aaa;margin-top:.5rem">'+new Date(r.confirmedAt).toLocaleString('pt-PT')+'</p>':'')+
+      '</div>';
+    }).join(''):'<p style="color:#4a7c5e;font-size:14px">Nenhuma mensagem ainda.</p>');
+}
+function renderAll(){ renderGuests(); renderRsvps(); renderStats(); }
+
+renderConfirmedPublic();
+</script>
+</body>
+</html>
